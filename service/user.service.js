@@ -65,7 +65,7 @@ async function registerUser(firstName, lastName, email, contactNo, username, has
 }
 
 //Login User
-async function loginUser(username, password) {
+async function loginUser(username) {
     try {
         const user = await Users.findOne({ 
             where: { 
@@ -76,40 +76,10 @@ async function loginUser(username, password) {
                 as: 'roles',
                 attributes: ['role']
             }
-        });
-        // console.log(user)
-
-        if (!user) {
-            return { 
-                error: true,
-                status: 404,
-                payload: "User Doesn't Exist"
-            };
         }
-
-        bcrypt.compare(password, user.password).then(async (match) => {
-            if (!match) {
-                    return { 
-                        error: true,
-                        status: 400,
-                        payload: "Wrong Username And Password Combination" 
-            };
-        }
-            else{
-               const accessToken = sign(
-                { username: user.username, id: user.id, role: user.roles.role, roleId: user.roleId },
-                "importantsecret"
-              );
-              console.log(accessToken)
-              return {
-                error: false,
-                status: 200,
-                payload: accessToken
-              }
-            }  
-          });
-
         
+        );
+        return user;
     } catch (error) {
         console.error('Error Login In User Service : ',error);
         throw error;

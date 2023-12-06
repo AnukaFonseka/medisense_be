@@ -41,22 +41,34 @@ async function loginUser(req, res) {
     try {
         const { username, password } = req.body;
 
-        const result = await userService.loginUser(username, password);
+        const user = await userService.loginUser(username);
 
-        console.log(result);
-
-        if(result.error) {
-            return res.status(result.status).json ({
+        if (!user) {
+            return res.json({ 
                 error: true,
-                payload: result.payload
-            })
-        } else {
-            return res.status(result.status).json ({
-                error: false,
-                payload: result.payload
-            })
-        } 
-        
+                payload: "User Doesn't Exist"
+             });
+            
+          }
+        else {
+            bcrypt.compare(password, user.password).then(async (match) => {
+                if (!match) {res.status(400).json({ 
+                    error: true,
+                    payload: "Wrong Username And Password Combination" 
+                });
+            }
+                else{
+                  const accessToken = sign(
+                    { username: user.username, id: user.id, roleId: user.roleId},
+                    "importantsecret"
+                  );
+                  res.status(200).json({
+                    error: false,
+                    payload: accessToken
+                  });
+                }  
+              });
+        }     
     } catch (error) {
         return res.status(500).json({
             error: true,

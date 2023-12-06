@@ -23,6 +23,8 @@ try {
     db.Tests.hasMany(db.PackageTests, { as: "packageTests", foreignKey: "testId"});
     db.PackageTests.belongsTo(db.Packages, {as: "Packages", foreignKey: "packageId"});
     db.Packages.hasMany(db.PackageTests, {as: "packageTests", foreignKey: "packageId"});
+    db.Tests.belongsTo(db.Users, {as: "user", foreignKey: "userId"});
+    db.Users.hasMany(db.Tests, {as: "tests", foreignKey: "userId"});
 } catch (error) {
     console.log(error);
 }
