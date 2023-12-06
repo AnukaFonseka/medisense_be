@@ -16,6 +16,17 @@ const db = require("./models");
 const routes = require("./routes/index.routes");
 app.use("/", routes);
 
+try {
+    db.Users.belongsTo(db.Roles, { as: "roles", foreignKey: "roleId"});
+    db.Roles.hasMany(db.Users, { as: "users", foreignKey: "roleId"});
+    db.PackageTests.belongsTo(db.Tests, { as: "tests", foreignKey: "testId"});
+    db.Tests.hasMany(db.PackageTests, { as: "packageTests", foreignKey: "testId"});
+    db.PackageTests.belongsTo(db.Packages, {as: "Packages", foreignKey: "packageId"});
+    db.Packages.hasMany(db.PackageTests, {as: "packageTests", foreignKey: "packageId"});
+} catch (error) {
+    console.log(error);
+}
+
 
 db.sequelize.sync({ alter: true }).then(() => {
     app.listen(3002, () => {

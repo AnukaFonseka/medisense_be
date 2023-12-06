@@ -1,8 +1,9 @@
+const { sign } = require("jsonwebtoken");
 const { Users, Roles } = require("../models");
 const bcrypt = require("bcrypt");
 
 //Register User
-async function registerUser(firstName, lastName,email, contactNo,username, hashPassword,roleId ) {
+async function registerUser(firstName, lastName, email, contactNo, username, hashPassword,roleId ) {
     try { 
         const usernameExist = await Users.findOne({
             where: {
@@ -63,6 +64,59 @@ async function registerUser(firstName, lastName,email, contactNo,username, hashP
     }
 }
 
+//Login User
+async function loginUser(username, password) {
+    try {
+        const user = await Users.findOne({ 
+            where: { 
+                username: username 
+            },
+            include: {
+                model: Roles,
+                as: 'roles',
+                attributes: ['role']
+            }
+        });
+        // console.log(user)
+
+        if (!user) {
+            return { 
+                error: true,
+                status: 404,
+                payload: "User Doesn't Exist"
+            };
+        }
+
+        bcrypt.compare(password, user.password).then(async (match) => {
+            if (!match) {
+                    return { 
+                        error: true,
+                        status: 400,
+                        payload: "Wrong Username And Password Combination" 
+            };
+        }
+            else{
+               const accessToken = sign(
+                { username: user.username, id: user.id, role: user.roles.role, roleId: user.roleId },
+                "importantsecret"
+              );
+              console.log(accessToken)
+              return {
+                error: false,
+                status: 200,
+                payload: accessToken
+              }
+            }  
+          });
+
+        
+    } catch (error) {
+        console.error('Error Login In User Service : ',error);
+        throw error;
+    }
+}
+
 module.exports = {
-    registerUser
+    registerUser,
+    loginUser
 }

@@ -6,7 +6,7 @@ function getUserRoutes(){
     const router = express.Router();
 
     router.use(express.json());
-    // router.post("/login", userController.loginUser);
+    router.post("/login", userController.loginUser);
 
     router.use(authMiddleware);
 
