@@ -11,6 +11,9 @@ function getTestRoutes() {
     router.post("/addTest", testController.createTest);
     router.get("/getAllTests", testController.getAllTests);
     router.get("/getTestById/:id", testController.getTestById);
+    router.delete("/deleteTest/:id", testController.deleteTest);
+    router.patch("/updateTest/:id", testController.updateTest);
+
 
     return router;
 }

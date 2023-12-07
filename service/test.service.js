@@ -104,12 +104,74 @@ async function getTestById(id) {
             }
         }
     } catch (error) {
-        
+        console.error('Error Getting Test By ID Service : ',error);
+        throw error;
+    }
+}
+
+async function deleteTest(id) {
+    try {
+        const test = await Tests.findByPk(id);
+
+        if(!test) {
+            return {
+                error: true,
+                status: 404,
+                payload: "Test not found!"
+            }
+        }
+
+        else {
+            const deleteTest = await Tests.destroy({
+                where: {
+                    id: id
+                }
+            })
+
+            return {
+                error: false,
+                status: 200,
+                payload: "Test deleted successfully!"
+            }
+        }
+    } catch (error) {
+        console.error('Error Deleting Test Service : ',error);
+        throw error;
+    }
+}
+
+//Update Test
+async function updateTest(id, updatedData) {
+    try {
+        const test = await Tests.findByPk(id);
+
+        if(!test) {
+            return {
+                error: true,
+                status: 404,
+                payload: "Test not found!"
+            }
+        } 
+        else {
+            const updatedTest = await test.update(updatedData);
+
+            return {
+                error: false,
+                status: 200,
+                payload: "Test updated successfully!"
+            }
+        }
+
+    } catch (error) {
+        console.error('Error Updating Test Service : ',error);
+        throw error;
     }
 }
 
 module.exports = {
     createTest,
     getAllTests,
-    getTestById
+    getTestById,
+    deleteTest,
+    updateTest
 }
