@@ -11,6 +11,7 @@ function getUserRoutes() {
     router.use(authMiddleware);
 
     router.post("/registerUser", userController.registerUser);
+    router.get("/getUserRoles", userController.getUserRoles);
 
     
 

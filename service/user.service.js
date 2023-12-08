@@ -86,7 +86,33 @@ async function loginUser(username) {
     }
 }
 
+//Get User Roles
+async function getUserRoles(){
+    try {
+        const roles = await Roles.findAll();
+
+        if(!roles){
+            return {
+                error : true,
+                status: 404,
+                payload: "No User Roles Available. Please Create User Roles In The Database."
+            }
+        }
+        else {
+            return {
+                error: false,
+                status: 200,
+                payload: roles
+            }
+        }
+    } catch (error) {
+        console.error('Error Getting User Roles Service : ',error);
+        throw error;
+    }
+}
+
 module.exports = {
     registerUser,
-    loginUser
+    loginUser,
+    getUserRoles
 }
