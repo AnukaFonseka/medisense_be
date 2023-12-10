@@ -21,6 +21,8 @@ try {
     db.Roles.hasMany(db.Users, { as: "users", foreignKey: "roleId"});
     db.Tests.belongsTo(db.Users, {as: "user", foreignKey: "userId"});
     db.Users.hasMany(db.Tests, {as: "tests", foreignKey: "userId"});
+    db.Agencies.belongsTo(db.Users, {as: "user", foreignKey: "userId"});
+    db.Users.hasMany(db.Agencies, {as: "agencies", foreignKey: "userId"});
 
     //M-M
     db.Packages.belongsToMany(db.Tests, {through: "PackageTests", foreignKey: "pkgId", onDelete: "cascade"});

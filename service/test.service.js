@@ -109,6 +109,7 @@ async function getTestById(id) {
     }
 }
 
+//Delete Test
 async function deleteTest(id) {
     try {
         const test = await Tests.findByPk(id);
