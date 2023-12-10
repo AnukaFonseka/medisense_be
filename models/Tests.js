@@ -19,7 +19,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: true,
         }
-    })
+    }, {
+        indexes: [
+          {unique:true, fields:['testCode']},
+        ]
+      });
 
     return Tests;
 }

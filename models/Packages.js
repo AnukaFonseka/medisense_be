@@ -18,6 +18,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: true,
         }
-    });
+    }, {
+        indexes: [
+          {unique:true, fields:['packageCode']},
+          {unique:true, fields:['name']}
+        ]
+      });
     return Packages;
 }
