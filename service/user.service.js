@@ -117,6 +117,11 @@ async function getAllUsers() {
         const users = await Users.findAll({
             attributes: {
                 exclude: ['password']
+            },
+            include: {
+                model: Roles,
+                as: 'roles',
+                attributes: ['role']
             }
         });
 
