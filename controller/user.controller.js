@@ -99,12 +99,44 @@ async function getUserRoles(req, res) {
         return res.status(500).json({
             error: true,
             payload: error
-        })
+        });
+    }
+}
+
+//Get All Users.
+async function getAllUsers(req, res) {
+    try {
+        const userRole_id = req.user.roleId;
+
+        if (![1].includes(userRole_id)) {
+            return res.status(403).json({ error: true, payload: "Unauthorized. Only Admins can view users." });
+        }
+
+        const result = await userService.getAllUsers();
+
+        if(result.error) {
+            return res.status(result.status).json ({
+                error: true,
+                payload: result.payload
+            })
+        } else {
+            return res.status(result.status).json ({
+                error: false,
+                payload: result.payload
+            })
+        }
+    } catch (error) {
+        console.log("Error Getting Users Controller: ", error);
+        return res.status(500).json({
+            error: true,
+            payload: error
+        });
     }
 }
 
 module.exports = {
     registerUser,
     loginUser,
-    getUserRoles
+    getUserRoles,
+    getAllUsers
 }

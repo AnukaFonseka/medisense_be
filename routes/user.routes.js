@@ -12,6 +12,8 @@ function getUserRoutes() {
 
     router.post("/registerUser", userController.registerUser);
     router.get("/getUserRoles", userController.getUserRoles);
+    router.get("/getAllUsers", userController.getAllUsers);
+    
 
     
 

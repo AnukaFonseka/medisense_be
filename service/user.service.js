@@ -111,8 +111,39 @@ async function getUserRoles(){
     }
 }
 
+//Get All Users.
+async function getAllUsers() {
+    try {
+        const users = await Users.findAll({
+            attributes: {
+                exclude: ['password']
+            }
+        });
+
+        if(!users) {
+            return {
+                error: true,
+                status: 404,
+                payload: "User Doesn't Exist"
+            }
+        }
+        else {
+            return {
+                error: false,
+                status: 200,
+                payload: users
+            }
+        }
+
+    } catch (error) {
+        console.error('Error Getting User Service : ',error);
+        throw error;
+    }
+}
+
 module.exports = {
     registerUser,
     loginUser,
-    getUserRoles
+    getUserRoles,
+    getAllUsers
 }
