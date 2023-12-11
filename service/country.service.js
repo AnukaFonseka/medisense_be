@@ -55,7 +55,7 @@ async function getAllCountries() {
         throw error;       
     }
 }
-module,exports ={
+module.exports ={
     createCountry,
     getAllCountries
-}
+} 

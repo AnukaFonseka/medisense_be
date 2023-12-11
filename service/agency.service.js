@@ -68,7 +68,7 @@ async function getAllAgencies() {
 async function getAgencyById(id) {
     try {
         const agency = await Agencies.findOne({
-            where : {
+            where: {
                 id: id
             },
             include: {
@@ -133,11 +133,11 @@ async function deleteAgency(id) {
 }
 
 //Update Agency
-async function updateAgency(id) {
+async function updateAgency(id, updatedData) {
     try {
-         const agency = await Agencies.findByPk(id)
+         const agency = await Agencies.findByPk(id);
 
-         if(!test) {
+         if(!agency) {
             return {
                 error: true,
                 status: 404,
@@ -148,7 +148,7 @@ async function updateAgency(id) {
             const updatedAgency = await agency.update(updatedData);
 
             return {
-                error: false,
+                error: false, 
                 status: 200,
                 payload: "Agency updated successfully!"
             }

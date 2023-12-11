@@ -76,7 +76,7 @@ async function getAgencyById(req, res) {
             return res.status(403).json({ error: true, payload: "Unauthorized. Only Admins can view details of an Agency."});
         }
 
-        const result = await agencyService.getAgencyById();
+        const result = await agencyService.getAgencyById(id);
 
         if(result.error) {
             return res.status(result.status).json ({
@@ -134,16 +134,20 @@ async function deleteAgency(req, res) {
 }
 
 //Update an Agency
-async function updateAgency() {
+async function updateAgency(req, res) {
     try {
         const userRole_id = req.user.roleId;
         const { id } = req.params;
+
+        const updatedData = req.body;
+
+        delete updatedData.agencyCode
 
         if (![1].includes(userRole_id)) {
             return res.status(403).json({ error: true, payload: "Unauthorized. Only Admins can update details of an Agency."});
         }
 
-        const result = await agencyService.updateAgency(id);
+        const result = await agencyService.updateAgency(id, updatedData);
 
         if(result.error) {
             return res.status(result.status).json ({

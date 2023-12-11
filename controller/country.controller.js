@@ -103,4 +103,4 @@ async function getAllCountries(req, res) {
 module.exports = {
     createCountry,
     getAllCountries
-}
+} 

@@ -17,4 +17,4 @@ function getAgencyRoutes() {
     return router;
 
 }
-module.exports = getAgencyRoutes();
+module.exports = getAgencyRoutes(); 
