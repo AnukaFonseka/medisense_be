@@ -34,7 +34,7 @@ async function createCountry(country) {
 async function getAllCountries() {
     try {
         const country = await Countries.findAll();
-
+       
         if(!country) {
             return {
                 error: true,
