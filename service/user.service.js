@@ -129,7 +129,7 @@ async function getAllUsers() {
             return {
                 error: true,
                 status: 404,
-                payload: "User Doesn't Exist"
+                payload: "No user data available!"
             }
         }
         else {
@@ -146,9 +146,46 @@ async function getAllUsers() {
     }
 }
 
+//Get User By Id
+async function getUserById(id) {
+    try {
+        console.log(id)
+        const user = await Users.findByPk(id, {
+            attributes: {
+                exclude: ['password']
+            },
+            include: {
+                model: Roles,
+                as: 'roles',
+                attributes: ['role']
+            }
+        });
+        
+        if(!user) {
+            return {
+                error: true,
+                status: 404,
+                payload: "User Doesn't Exist!"
+            }
+        }
+        else {
+            return {
+                error: false,
+                status: 200,
+                payload: user
+            }
+        }
+
+    } catch (error) {
+        console.error('Error Getting User Service : ',error);
+        throw error;
+    }
+}
+
 module.exports = {
     registerUser,
     loginUser,
     getUserRoles,
-    getAllUsers
+    getAllUsers,
+    getUserById
 }
