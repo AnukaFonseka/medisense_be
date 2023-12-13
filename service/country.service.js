@@ -3,6 +3,12 @@ const{Countries, Users} = require("../models");
 //Create New Country
 async function createCountry(country) {
     try {
+        const countryCodeExist = await Countries.findOne({
+            where: {
+                code: country.code
+            }
+        });
+
         const countryExist = await Countries.findOne({
             where: {
                 name: country.name
@@ -14,6 +20,14 @@ async function createCountry(country) {
                 error: true,
                 status: 409,
                 payload: "Sorry already the country is saved."
+            }
+        }
+        
+        if(countryCodeExist) {
+            return {
+                error: true,
+                status: 409,
+                payload: "Duplicate Country Code!."
             }
         } 
         const newCountry = await Countries.create(country);
