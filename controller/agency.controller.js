@@ -169,17 +169,6 @@ async function updateAgency(req, res) {
         })   
     }
 }
-
-    
-
-
-
-
-
-
-
-
-
 module.exports = {
     createAgency,
     getAllAgencies,

@@ -69,38 +69,71 @@ async function getAllCountries(req, res) {
 }
 
 //Get gcc Countries
-// async function getGccCountries(req, res) {
-//     try{
-//     const userRole_id = req.user.roleId;
+async function getGccCountries(req, res) {
+    try{
+    const userRole_id = req.user.roleId;
 
-//     if (![1].includes(userRole_id)) {
-//         return res.status(403).json({ error: true, payload: "Unauthorized. Only Admins can view the gcc countries."});
-//     }
+    if (![1].includes(userRole_id)) {
+        return res.status(403).json({ error: true, payload: "Unauthorized. Only Admins can view the gcc countries."});
+    }
 
-//     const result = await countryService.getGccCountries();
+    const result = await countryService.getGccCountries();
 
-//     if(result.error) {
-//         return res.status(result.status).json ({
-//             error: true,
-//             payload: result.payload
-//         })
-//     } else {
-//         return res.status(result.status).json ({
-//             error: false,
-//             payload: result.payload
-//         })
-//     }
-//     }catch(error) {
-//     console.log("Error creating GCC Country controller: ", error);
-//     return res.status(500).json({
-//         error: true,
-//         payload: error
-//          })
+    if(result.error) {
+        return res.status(result.status).json ({
+            error: true,
+            payload: result.payload
+        })
+    } else {
+        return res.status(result.status).json ({
+            error: false,
+            payload: result.payload
+        })
+    }
+    }catch(error) {
+    console.log("Error creating GCC Country controller: ", error);
+    return res.status(500).json({
+        error: true,
+        payload: error
+         })
 
-//     }
-// }
+    }
+}
+
+//Get Non-GCC Countries
+async function getNonGccCountries(req, res) {
+    try{
+    const userRole_id = req.user.roleId;
+
+    if (![1].includes(userRole_id)) {
+        return res.status(403).json({ error: true, payload: "Unauthorized. Only Admins can view the Non-GCC countries."});
+    }
+
+    const result = await countryService.getNonGccCountries();
+
+    if(result.error) {
+        return res.status(result.status).json ({
+            error: true,
+            payload: result.payload
+        })
+    } else {
+        return res.status(result.status).json ({
+            error: false,
+            payload: result.payload
+        })
+    }
+    }catch(error) {
+    console.log("Error creating Non-GCC Country controller: ", error);
+    return res.status(500).json({
+        error: true,
+        payload: error
+         })
+    }
+}
 
 module.exports = {
     createCountry,
-    getAllCountries
+    getAllCountries,
+    getGccCountries,
+    getNonGccCountries
 } 

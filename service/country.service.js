@@ -47,15 +47,73 @@ async function getAllCountries() {
                 status: 200,
                 payload: country
             }
-        }
-            
-        
+        }    
     } catch (error) {
-        console.error('Error getting Agency service :' ,error);
+        console.error('Error getting Country service :' ,error);
         throw error;       
     }
 }
+
+
+//Get All GCC Countries
+async function getGccCountries() {
+    try {
+        const country = await Countries.findAll({
+            where: {
+                gcc: true,
+            }
+        });
+
+        if(!country) {
+            return {
+                error: true,
+                status: 404,
+                payload: "No GCC country data available!"
+            }
+        } else {
+            return {
+                error: false,
+                status: 200, 
+                payload: country
+            }
+        }    
+    } catch (error) {
+        console.error('Error getting GCC Country service :' ,error);
+        throw error;       
+    }
+}
+
+//Get All Non-GCC Countries
+async function getNonGccCountries() {
+    try {
+        const country = await Countries.findAll({
+            where: {
+                gcc: false,
+            }
+        });
+
+        if(!country) {
+            return {
+                error: true,
+                status: 404,
+                payload: "No Non-GCC country data available!"
+            }
+        } else {
+            return {
+                error: false,
+                status: 200, 
+                payload: country
+            }
+        }    
+    } catch (error) {
+        console.error('Error getting Non-GCC Country service :' ,error);
+        throw error;       
+    }
+}
+
 module.exports ={
     createCountry,
-    getAllCountries
+    getAllCountries,
+    getGccCountries,
+    getNonGccCountries
 } 

@@ -10,6 +10,8 @@ function getCountryRoutes() {
 
     router.post("/registerCountry", countryController.createCountry);
     router.get("/getAllCountries" ,countryController.getAllCountries);
+    router.get("/getGccCountries" ,countryController.getGccCountries);
+    router.get("/getNonGccCountries" ,countryController.getNonGccCountries);
 
     return router;
 }
