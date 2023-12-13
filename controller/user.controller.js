@@ -6,14 +6,14 @@ const { sign } = require("jsonwebtoken");
 async function registerUser(req, res) {
     try {
         const userRole_id = req.user.roleId;
-        const {firstName, lastName,email,contactNo, username, password, roleId } = req.body;
+        const {firstName, lastName,email,contactNo, dob, address, username, password, roleId } = req.body;
 
         if (![1].includes(userRole_id)) {
             return res.status(403).json({ error: true, payload: "Unauthorized. Only Admins can create users." });
         }
 
         const hashPassword = await bcrypt.hash(password, 10);
-        const result = await userService.registerUser(firstName, lastName,email,contactNo,username, hashPassword, roleId);
+        const result = await userService.registerUser(firstName, lastName,email,contactNo, dob, address, username, hashPassword, roleId);
         
         if(result.error) {
             return res.status(result.status).json ({
@@ -201,6 +201,8 @@ async function updateUser(req, res) {
         const userRole_id = req.user.roleId;
         const { id } = req.params;
         const userData = req.body;
+
+        delete userData.password;
 
         if (![1].includes(userRole_id)) {
             return res.status(403).json({ error: true, payload: "Unauthorized. Only Admins can update users." });
