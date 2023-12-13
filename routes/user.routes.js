@@ -15,6 +15,8 @@ function getUserRoutes() {
     router.get("/getAllUsers", userController.getAllUsers);
     router.get("/getUserById/:id", userController.getUserById);
     router.get("/getSignedUser", userController.getSignedUser);   
+    router.patch("/updateUser/:id", userController.updateUser);
+    router.delete("/deleteUser/:id", userController.deleteUser)
     
     return router;
 }

@@ -149,7 +149,6 @@ async function getAllUsers() {
 //Get User By Id
 async function getUserById(id) {
     try {
-        console.log(id)
         const user = await Users.findByPk(id, {
             attributes: {
                 exclude: ['password']
@@ -182,10 +181,68 @@ async function getUserById(id) {
     }
 }
 
+//Update User
+async function updateUser(id, userData) {
+    try {
+        const user = await Users.findByPk(id);
+        
+        if(!user) {
+            return {
+                error: true,
+                status: 404,
+                payload: "User Doesn't Exist!"
+            }
+        }
+        else {
+            const update = await user.update(userData);
+
+            return {
+                error: false,
+                status: 200,
+                payload: "User Successfullly Updated!"
+            }
+        }
+
+    } catch (error) {
+        console.error('Error Getting User Service : ',error);
+        throw error;
+    }
+}
+
+//Delete User 
+async function deleteUser(id) {
+    try {
+        const user = await Users.findByPk(id);
+        
+        if(!user) {
+            return {
+                error: true,
+                status: 404,
+                payload: "User Doesn't Exist!"
+            }
+        }
+        else {
+            const delUser = await user.destroy();
+
+            return {
+                error: false,
+                status: 200,
+                payload: "User Successfullly Deleted!"
+            }
+        }
+
+    } catch (error) {
+        console.error('Error Deleting User Service : ',error);
+        throw error;
+    }
+}
+
 module.exports = {
     registerUser,
     loginUser,
     getUserRoles,
     getAllUsers,
-    getUserById
+    getUserById,
+    updateUser,
+    deleteUser
 }

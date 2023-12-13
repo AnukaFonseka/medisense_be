@@ -195,6 +195,71 @@ async function getSignedUser(req, res) {
     }
 }
 
+//Update User
+async function updateUser(req, res) {
+    try {
+        const userRole_id = req.user.roleId;
+        const { id } = req.params;
+        const userData = req.body;
+
+        if (![1].includes(userRole_id)) {
+            return res.status(403).json({ error: true, payload: "Unauthorized. Only Admins can update users." });
+        }
+        
+        const result = await userService.updateUser(id, userData);
+
+        if(result.error) {
+            return res.status(result.status).json ({
+                error: true,
+                payload: result.payload
+            })
+        } else {
+            return res.status(result.status).json ({
+                error: false,
+                payload: result.payload
+            })
+        }
+    } catch (error) {
+        console.log("Error Updating User Controller: ", error);
+        return res.status(500).json({
+            error: true,
+            payload: error
+        });
+    }
+}
+
+//Delete User
+async function deleteUser(req, res) {
+    try {
+        const userRole_id = req.user.roleId;
+        const { id } = req.params;
+
+        if (![1].includes(userRole_id)) {
+            return res.status(403).json({ error: true, payload: "Unauthorized. Only Admins can delete users." });
+        }
+        
+        const result = await userService.deleteUser(id);
+
+        if(result.error) {
+            return res.status(result.status).json ({
+                error: true,
+                payload: result.payload
+            })
+        } else {
+            return res.status(result.status).json ({
+                error: false,
+                payload: result.payload
+            })
+        }
+    } catch (error) {
+        console.log("Error Deleting User Controller: ", error);
+        return res.status(500).json({
+            error: true,
+            payload: error
+        });
+    }
+}
+
 
 module.exports = {
     registerUser,
@@ -202,5 +267,7 @@ module.exports = {
     getUserRoles,
     getAllUsers,
     getUserById,
-    getSignedUser
+    getSignedUser,
+    updateUser,
+    deleteUser
 }
