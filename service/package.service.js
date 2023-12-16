@@ -130,9 +130,48 @@ async function deletePackage(id) {
     }
 }
 
+//Get Package By Id
+async function getPackageById(id) {
+    try {
+        const package = await Packages.findByPk(id, {
+            include: {
+                model: Tests,
+                through: "PackageTests",
+                attributes: ['id', 'testCode', 'description', 'type', 'price']
+            }
+        });
+
+        if(!package) {
+            return {
+                error: true,
+                status: 404,
+                payload: "No Package Found!"
+            }
+        }
+        else {
+            return {
+                error: false,
+                status: 200,
+                payload: package
+            }
+        }
+
+        
+
+    } catch (error) {
+        console.error('Error Deleting Package Service : ',error);
+        return {
+            error: true,
+            status: 500,
+            payload: error
+        }
+    }
+}
+
 module.exports = {
     createPackage,
     createPackageTests,
     getAllPackages,
-    deletePackage
+    deletePackage,
+    getPackageById
 }

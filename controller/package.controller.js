@@ -114,8 +114,75 @@ async function deletePackage(req, res) {
     }
 }
 
+//Get Package By ID
+async function getPackageById(req, res) {
+    try {
+        const userRole_id = req.user.roleId;
+        const { id } = req.params;
+
+        if (![1].includes(userRole_id)) {
+            return res.status(403).json({ error: true, payload: "Unauthorized. Only Admins Can View Packages."});
+        }
+
+        const result = await packageService.getPackageById(id);
+
+        if(result.error) {
+            return res.status(result.status).json({
+                error: true,
+                payload: result.payload
+            });
+        } else {
+            return res.status(result.status).json({
+                error: false,
+                payload: result.payload
+            });
+        }
+
+    } catch (error) {
+        console.log("Error Getting Package Controller: ", error);
+        return res.status(500).json({
+            error: true,
+            payload: error
+        });
+    }
+}
+
+//Update Package 
+async function updatePackage(req, res) {
+    try {
+        const userRole_id = req.user.roleId;
+        const { id } = req.params;
+
+        if (![1].includes(userRole_id)) {
+            return res.status(403).json({ error: true, payload: "Unauthorized. Only Admins Can Update Packages."});
+        }
+
+        const result = await packageService.updatePackage(id);
+
+        if(result.error) {
+            return res.status(result.status).json({
+                error: true,
+                payload: result.payload
+            });
+        } else {
+            return res.status(result.status).json({
+                error: false,
+                payload: result.payload
+            });
+        }
+
+    } catch (error) {
+        console.log("Error Updating Package Controller: ", error);
+        return res.status(500).json({
+            error: true,
+            payload: error
+        });
+    }
+}
+
 module.exports = {
     createPackage,
     getAllPackages,
-    deletePackage
+    deletePackage,
+    getPackageById
 }
