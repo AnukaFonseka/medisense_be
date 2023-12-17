@@ -22,6 +22,13 @@ async function registerCustomer(customer) {
     
     } catch (error) {
         console.error('Error Creating Customer Service : ',error);
+        if(error.name === "SequelizeForeignKeyConstraintError") {
+            return {
+                status: 409, // Bad Request status for duplicate email
+                payload: "Conflict due to foreign key constraint.",
+                error: true,
+            }
+        }
         return {
             error: true,
             status: 500,
@@ -51,6 +58,13 @@ async function createCustomerPackages(packages, customerId, admissionId) {
     
     } catch (error) {
         console.error('Error Creating Customer Packages Service : ',error);
+        if(error.name === "SequelizeForeignKeyConstraintError") {
+            return {
+                status: 409, // Conflict status code due to a conflict with the current state of the resource
+                payload: "Conflict due to foreign key constraint.",
+                error: true,
+            }
+        }
         return {
             error: true,
             status: 500,

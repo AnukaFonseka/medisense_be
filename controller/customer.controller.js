@@ -19,9 +19,9 @@ async function registerCustomer(req, res) {
         const resultCustomer = await customerService.registerCustomer(customerDetails);
 
         if(resultCustomer.error) {
-            return res.status(resultPackage.status).json ({
+            return res.status(resultCustomer.status).json ({
                 error: true,
-                payload: resultPackage.payload
+                payload: resultCustomer.payload
             })
         } 
 
@@ -41,7 +41,7 @@ async function registerCustomer(req, res) {
             }
         }
 
-        
+        //Save selected tests.
         const resultTests = await customerService.createCustomerTests(tests, customerId, admissionId);
 
         if(resultTests.error) {
