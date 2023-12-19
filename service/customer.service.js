@@ -149,10 +149,41 @@ async function createCustomerTests(tests, customerId, admissionId) {
     }
 }
 
+//Get All Customers
+async function getAllCustomers() {
+    try {
+        const customers = await Customers.findAll();
+
+        if(!customers) {
+            return {
+                error: true,
+                status: 404,
+                payload: "No Customers Found!"
+            }
+        } 
+        else {
+            return{
+                error: false,
+                status: 200,
+                payload: customers
+            }
+        }
+        
+    } catch (error) {
+        console.error('Error Getting Customer Service : ',error);
+        return {
+            error: true,
+            status: 500,
+            payload: error
+        }
+    }
+}
+
 
 
 module.exports = {
     registerCustomer,
     createCustomerPackages,
-    createCustomerTests
+    createCustomerTests,
+    getAllCustomers
 }
