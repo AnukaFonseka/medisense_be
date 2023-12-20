@@ -119,8 +119,39 @@ async function getAllCustomers(req, res) {
     }
 }
 
+//Get Customer by id
+async function getCustomerById(req, res) {
+  try {
+    const { customerId } = req.params;
+
+    const result = await customerService.getCustomerById(customerId);
+
+    if(result.error) {
+      return res.status(result.status).json({
+        error: true,
+        payload: result.payload
+      });
+    }
+
+    return res.status(result.status).json({
+      error: false,
+      payload: result.payload
+    });
+
+  } catch (error) {
+    console.log("Error getting customer: ", error);
+    return res.status(500).json({
+      error: true,
+      payload: error
+    });
+  }
+}
+
+
+
 module.exports = {
     registerCustomer,
     createCustomerTestsAndPackages,
-    getAllCustomers
+    getAllCustomers,
+    getCustomerById
 }

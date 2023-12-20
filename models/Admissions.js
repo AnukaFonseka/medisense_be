@@ -33,7 +33,8 @@ module.exports = (sequelize, DataTypes) => {
         }, 
         paymentStatus: {
             type: DataTypes.STRING,
-            allownull: true
+            allownull: true,
+            defaultValue: "Not Paid"
         }, 
         remarks: {
             type: DataTypes.STRING,

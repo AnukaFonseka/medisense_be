@@ -11,6 +11,7 @@ function getCustomerRoutes() {
     router.post("/registerCustomer", customerController.registerCustomer);
     router.post("/addCustomerTestsAndPackages/:customerId/:admissionId", customerController.createCustomerTestsAndPackages);
     router.get("/getAllCustomers", customerController.getAllCustomers);
+    router.get("/getCustomerById/:customerId", customerController.getCustomerById);
 
     return router;
 }

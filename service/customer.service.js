@@ -1,4 +1,4 @@
-const {Customers, Admissions, CustomerPackages, Packages, Tests, CustomerTests} = require("../models");
+const {Customers, Admissions, CustomerPackages, Packages, Tests, CustomerTests, Agencies, Jobs, Countries} = require("../models");
 
 //Register Customer
 async function registerCustomer(customer) {
@@ -97,10 +97,6 @@ async function createCustomerTests(tests, customerId, admissionId) {
             include: {
                 model: Packages,
                 as: 'package',
-                include: {
-                    model: Tests,
-                    through: "PackageTests"
-                }
             }
         })
 
@@ -152,7 +148,21 @@ async function createCustomerTests(tests, customerId, admissionId) {
 //Get All Customers
 async function getAllCustomers() {
     try {
-        const customers = await Customers.findAll();
+        const customers = await Customers.findAll({
+            include: [{
+                model: Admissions,
+                as: 'admissions'
+            }, {
+                model: Agencies,
+                as: 'agency'
+            }, {
+                model: Countries,
+                as: 'country'
+            }, {
+                model: Jobs,
+                as: 'job'
+            }]
+        });
 
         if(!customers) {
             return {
@@ -161,16 +171,109 @@ async function getAllCustomers() {
                 payload: "No Customers Found!"
             }
         } 
-        else {
-            return{
-                error: false,
-                status: 200,
-                payload: customers
+
+        const customerList = customers.map((customer, index) => {
+            
+            //Convert global time to local time.
+            const off = customer.updatedAt.getTimezoneOffset() * 60000
+            var newdt = new Date(customer.updatedAt - off).toISOString()
+            const dateAndTime = newdt.split('T')
+            const datePart = dateAndTime[0];
+            const timePart = dateAndTime[1].substring(0, 8);
+
+            return {
+                id: customer.id,
+                fullName: customer.fullName,
+                dateOfBirth: customer.dateOfBirth,
+                sex: customer.sex,
+                address: customer.address,
+                email: customer.email,
+                mobileNo: customer.mobileNo,
+                civilStatus: customer.civilStatus,
+                nic: customer.nic,
+                country: customer.country.name,
+                agency: customer.agency.name,
+                job: customer.job.name,
+                date: datePart,
+                time: timePart,
+                medical: customer.admissions[0].medicalType,
+                status: customer.admissions[0].paymentStatus
             }
+        })
+
+        return{
+            error: false,
+            status: 200,
+            payload: customerList
         }
+
         
     } catch (error) {
         console.error('Error Getting Customer Service : ',error);
+        return {
+            error: true,
+            status: 500,
+            payload: error
+        }
+    }
+}
+
+//Get Customer By ID
+async function getCustomerById(id) {
+    try {
+        const customer = await Customers.findOne({
+            where: {
+                id: id
+            },
+            include: [{
+                model: Admissions,
+                as: 'admissions'
+            }, {
+                model: Agencies,
+                as: 'agency'
+            }, {
+                model: Countries,
+                as: 'country'
+            }, {
+                model: Jobs,
+                as: 'job'
+            }]
+        });
+
+        if(!customer) {
+            return {
+                error: true,
+                status: 404,
+                payload: "No Customer Found!"
+            }
+        }
+
+        const customersObj = {
+            id: customer.id,
+            fullName: customer.fullName,
+            dateOfBirth: customer.dateOfBirth,
+            sex: customer.sex,
+            address: customer.address,
+            email: customer.email,
+            mobileNo: customer.mobileNo,
+            civilStatus: customer.civilStatus,
+            nic: customer.nic,
+            country: customer.country.name,
+            agency: customer.agency.name,
+            job: customer.job.name,
+            createdAt: customer.createdAt,
+            updatedAt: customer.updatedAt,
+            admissions: customer.admissions,
+        }
+
+        return {
+            error: false,
+            status: 200,
+            payload: customersObj
+        }
+
+    } catch (error) {
+        console.error('Error Getting Customer By Id Service : ',error);
         return {
             error: true,
             status: 500,
@@ -185,5 +288,6 @@ module.exports = {
     registerCustomer,
     createCustomerPackages,
     createCustomerTests,
-    getAllCustomers
+    getAllCustomers,
+    getCustomerById
 }
