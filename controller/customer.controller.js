@@ -146,11 +146,45 @@ async function getCustomerById(req, res) {
   }
 }
 
+//Update Customer By ID
+async function updateCustomerById(req, res) {
+    try {
+        const { customerId } = req.params;
+        const customerDetails = req.body;
+        const userRole_id = req.user.roleId;
 
+        if (![1, 2].includes(userRole_id)) {
+            return res.status(403).json({ error: true, payload: "Unauthorized. Only Admins and Receptionists can update Customers." });
+        }
+
+        const result = await customerService.updateCustomerById(customerId, customerDetails);
+
+        if(result.error) {
+            return res.status(result.status).json ({
+                error: true,
+                payload: result.payload
+            })
+        }
+        else {
+            return res.status(result.status).json ({
+                error: false,
+                payload: result.payload
+            })
+        }
+
+    } catch (error) {
+        console.log("Error Updating Customer Controller: ", error);
+        return res.status(500).json({
+            error: true,
+            payload: error
+        })
+    }
+}
 
 module.exports = {
     registerCustomer,
     createCustomerTestsAndPackages,
     getAllCustomers,
-    getCustomerById
+    getCustomerById,
+    updateCustomerById
 }

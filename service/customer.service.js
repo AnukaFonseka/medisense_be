@@ -58,7 +58,7 @@ async function createCustomerPackages(packages, customerId, admissionId) {
                 payload: "Admission not found."
             }
         }
-        
+
         const packageList = packages.map((package, index) => {
             return {
                 packageId: package,
@@ -304,7 +304,34 @@ async function getCustomerById(id) {
     }
 }
 
-//Update 
+//Update Customer By ID
+async function updateCustomerById(id, data) {
+    try {
+        const customer = await Customers.findByPk(id);     
+
+        if(!customer) {
+            return {
+                error: true,
+                status: 404,
+                payload: "No Customer Found!"
+            }
+        }
+
+        const updatedCustomer = await customer.update(data);
+        return {
+            error: false,
+            status: 200,
+            payload: "Customer Successfully Updated!"
+        }
+    } catch (error) {
+        console.error('Error Updating Customer By Id Service : ',error);
+        return {
+            error: true,
+            status: 500,
+            payload: error
+        }
+    }
+}
 
 
 
@@ -313,5 +340,6 @@ module.exports = {
     createCustomerPackages,
     createCustomerTests,
     getAllCustomers,
-    getCustomerById
+    getCustomerById,
+    updateCustomerById
 }

@@ -8,10 +8,17 @@ function getCustomerRoutes() {
     router.use(express.json());
     router.use(authMiddleware);
 
+    //POST
     router.post("/registerCustomer", customerController.registerCustomer);
     router.post("/addCustomerTestsAndPackages/:customerId/:admissionId", customerController.createCustomerTestsAndPackages);
+    
+    //GET
     router.get("/getAllCustomers", customerController.getAllCustomers);
     router.get("/getCustomerById/:customerId", customerController.getCustomerById);
+    
+    //PATCH
+    router.patch("/updateCustomerById/:customerId", customerController.updateCustomerById);
+
 
     return router;
 }
