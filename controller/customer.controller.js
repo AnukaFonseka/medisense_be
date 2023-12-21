@@ -118,7 +118,7 @@ async function getAllCustomers(req, res) {
     }
 }
 
-//Get Customer by id
+//Get Customer by ID
 async function getCustomerById(req, res) {
   try {
     const { customerId } = req.params;
@@ -181,10 +181,45 @@ async function updateCustomerById(req, res) {
     }
 }
 
+//Delete Customer By ID
+async function deleteCustomerById(req, res) {       
+    try {
+        const { customerId } = req.params;
+        const userRole_id = req.user.roleId;        
+
+        if (![1].includes(userRole_id)) {
+            return res.status(403).json({ error: true, payload: "Unauthorized. Only Admins can delete Customers." });
+        }
+
+        const result = await customerService.deleteCustomerById(customerId);
+
+        if(result.error) {
+            return res.status(result.status).json ({
+                error: true,
+                payload: result.payload
+            })
+        }   
+        else {
+            return res.status(result.status).json ({
+                error: false,
+                payload: result.payload
+            })
+        }
+    }   
+    catch (error) {
+        console.log("Error Deleting Customer Controller: ", error);
+        return res.status(500).json({
+            error: true,
+            payload: error
+        })
+    }
+}
+
 module.exports = {
     registerCustomer,
     createCustomerTestsAndPackages,
     getAllCustomers,
     getCustomerById,
-    updateCustomerById
+    updateCustomerById,
+    deleteCustomerById
 }

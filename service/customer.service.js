@@ -333,6 +333,34 @@ async function updateCustomerById(id, data) {
     }
 }
 
+//Delete Customer By Id
+async function deleteCustomerById(id) {
+    try {
+        const customer = await Customers.findByPk(id);
+        if(!customer) {
+            return {
+                error: true,
+                status: 404,
+                payload: "No Customer Found!"
+            }
+        }
+
+        await customer.destroy();
+        return {
+            error: false,
+            status: 200,
+            payload: "Customer Successfully Deleted!"
+        }
+
+    } catch (error) {
+        console.error('Error Deleting Customer By Id Service : ',error);
+        return {
+            error: true,
+            status: 500,
+            payload: error
+        }
+    }
+}
 
 
 module.exports = {
@@ -341,5 +369,6 @@ module.exports = {
     createCustomerTests,
     getAllCustomers,
     getCustomerById,
-    updateCustomerById
+    updateCustomerById,
+    deleteCustomerById
 }

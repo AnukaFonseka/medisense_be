@@ -19,6 +19,9 @@ function getCustomerRoutes() {
     //PATCH
     router.patch("/updateCustomerById/:customerId", customerController.updateCustomerById);
 
+    //DELETE
+    router.delete("/deleteCustomerById/:customerId", customerController.deleteCustomerById);
+
 
     return router;
 }
