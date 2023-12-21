@@ -40,6 +40,25 @@ async function registerCustomer(customer) {
 //Create Customer Packages
 async function createCustomerPackages(packages, customerId, admissionId) {
     try {
+
+        const customer = await Customers.findByPk(customerId);
+        if(!customer) {
+            return {
+                error: true,
+                status: 404,
+                payload: "Customer not found."
+            }
+        }
+
+        const admission = await Admissions.findByPk(admissionId);
+        if(!admission) {
+            return {
+                error: true,
+                status: 404,
+                payload: "Admission not found."
+            }
+        }
+        
         const packageList = packages.map((package, index) => {
             return {
                 packageId: package,
@@ -284,6 +303,8 @@ async function getCustomerById(id) {
         }
     }
 }
+
+//Update 
 
 
 
