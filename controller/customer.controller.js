@@ -64,7 +64,6 @@ async function createCustomerTestsAndPackages(req, res) {
                 })
             }
         }
-        console.log(customerId)
 
         //Save selected tests.
         const resultTests = await customerService.createCustomerTests(tests, customerId, admissionId);

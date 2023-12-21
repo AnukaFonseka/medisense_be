@@ -97,6 +97,10 @@ async function createCustomerTests(tests, customerId, admissionId) {
             include: {
                 model: Packages,
                 as: 'package',
+                include: {
+                    model: Tests,
+                    through: "PackageTests"
+                }
             }
         })
 
@@ -113,7 +117,6 @@ async function createCustomerTests(tests, customerId, admissionId) {
             for(let i = 0; i < packageTests.length; i++) {
                 const package = packageTests[i].package;
                 const tempList = package.Tests.map((test, index) => {
-                    console.log(test.id, customerId, admissionId)
                     return {
                         testId: test.id,
                         customerId: customerId,
