@@ -57,7 +57,11 @@ try {
     db.CustomerTests.belongsTo(db.Customers, {as: "customer", foreignKey: "customerId", onDelete: "cascade"});
     db.Customers.hasMany(db.CustomerTests, {as: "customerTests", foreignKey: "customerId", onDelete: "cascade"});
     db.CustomerTests.belongsTo(db.Tests, {as: "test", foreignKey: "testId", onDelete: "cascade"});
-    db.Tests.hasMany(db.CustomerTests, {as: "customerTests", foreignKey: "testId", onDelete: "cascade"})
+    db.Tests.hasMany(db.CustomerTests, {as: "customerTests", foreignKey: "testId", onDelete: "cascade"});
+
+    db.CustomerTests.belongsTo(db.Packages, {as: "package", foreignKey: "packageId", onDelete: "cascade"});
+    db.Packages.hasMany(db.CustomerTests, {as: "customerTests", foreignKey: "packageId", onDelete: "cascade"});
+
     db.CustomerTests.belongsTo(db.Admissions, {as: "admission", foreignKey: "admissionId", onDelete: "cascade"});
     db.Admissions.hasMany(db.CustomerTests, {as: "customerTests", foreignKey: "admissionId", onDelete: "cascade"});
 

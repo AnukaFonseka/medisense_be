@@ -11,6 +11,7 @@ function getCashierRoutes() {
     //GET
     router.get("/getCashierList", cashierController.getCashierList);
     router.get("/getCashierListMatrices", cashierController.getCashierListMatrices);
+    router.get("/getCustomerWithTestsAndPackages/:customerId/:admissionId", cashierController.getCustomerWithTestsAndPackages);
 
     
     return router;

@@ -1,5 +1,5 @@
-const { Sequelize } = require("sequelize");
-const {Admissions, Customers} = require("../models");
+const { Sequelize, Op } = require("sequelize");
+const {Admissions, Customers, CustomerTests, Tests, Packages} = require("../models");
 
 //Get Cashier List
 async function getCashierList() {
@@ -107,7 +107,94 @@ async function getCashierListMatrices() {
     }
 }
 
+//Get Customer With Tests And Packages
+async function getCustomerWithTestsAndPackages(customerId, admissionId) {
+    try {
+        const customerTests = await CustomerTests.findAll({
+            where: {
+                customerId: customerId,
+                admissionId: admissionId,
+                packageId: {
+                    [Op.eq]: null
+                }
+            },
+            attributes: ['id','packageId', 'testId'],
+            include: [{
+                model: Tests,
+                as: 'test',
+                attributes: ['id','testCode', 'description', 'price']
+            }]
+        });
+
+        const cutomerPackageTests = await CustomerTests.findAll({
+            where: {
+                customerId: customerId,
+                admissionId: admissionId,
+                packageId: {
+                    [Op.ne]: null
+                }
+            },
+            attributes: ['id','packageId', 'testId'],
+            include: [{
+                model: Packages,
+                as: 'package',
+                attributes: ['id','packageCode', 'discription', 'price'],
+            }, {
+                model: Tests,
+                as: 'test',
+                attributes: ['id','testCode', 'description', 'price']
+            }]
+
+        });
+        var customerWithTestsAndPackages = [];
+
+        if(cutomerPackageTests) {
+            const cutomerPackageTestsModified = cutomerPackageTests.map(customerTest => {
+                return {
+                    packageId: customerTest.package.id,
+                    testId: customerTest.testId,
+                    packageCode: customerTest.package.packageCode,
+                    testCode: customerTest.test.testCode,
+                    testDescription: customerTest.test.description,
+                    price: customerTest.package.price
+                }
+            });
+
+            customerWithTestsAndPackages = customerWithTestsAndPackages.concat(cutomerPackageTestsModified);
+        }
+
+        if(customerTests) {
+            const customerTestsModified = customerTests.map(customerTest => {
+                return {
+                    testId: customerTest.test.id,
+                    packageCode: null,
+                    testCode: customerTest.test.testCode,
+                    testDescription: customerTest.test.description,
+                    price: customerTest.test.price
+                }
+            });
+
+            customerWithTestsAndPackages = customerWithTestsAndPackages.concat(customerTestsModified);
+        }
+
+        return {
+            error: false,
+            status: 200,
+            payload: customerWithTestsAndPackages
+        }   
+
+    } catch (error) {
+        console.error('Error Getting Customer With Tests and Packages Service : ',error);
+        return {
+            error: true,
+            status: 500,
+            payload: error
+        }
+    }
+}
+
 module.exports = {
     getCashierList,
-    getCashierListMatrices
+    getCashierListMatrices,
+    getCustomerWithTestsAndPackages
 }

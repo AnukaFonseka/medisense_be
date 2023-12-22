@@ -104,7 +104,8 @@ async function createCustomerTests(tests, customerId, admissionId) {
             return {
                 testId: test,
                 customerId: customerId,
-                admissionId: admissionId
+                admissionId: admissionId,
+                packageId: null
             }
         });
 
@@ -139,7 +140,8 @@ async function createCustomerTests(tests, customerId, admissionId) {
                     return {
                         testId: test.id,
                         customerId: customerId,
-                        admissionId: admissionId
+                        admissionId: admissionId,
+                        packageId: package.id
                     }
                 })
                 testList1 = testList1.concat(tempList)
