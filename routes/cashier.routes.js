@@ -10,6 +10,7 @@ function getCashierRoutes() {
 
     //GET
     router.get("/getCashierList", cashierController.getCashierList);
+    router.get("/getCashierListMatrices", cashierController.getCashierListMatrices);
 
     
     return router;
