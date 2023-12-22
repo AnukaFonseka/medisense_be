@@ -5,7 +5,8 @@ const packageRoutes = require("./package.routes");
 const agencyRoutes = require("./agency.routes");
 const countryRoutes = require("./country.routes");
 const jobRoutes = require("./job.routes");
-const customerRoutes = require("./customer.routes")
+const customerRoutes = require("./customer.routes");
+const cashierRoutes = require("./cashier.routes");
 
 function routes() {
 
@@ -17,7 +18,8 @@ function routes() {
     router.use("/agency", agencyRoutes);
     router.use("/country", countryRoutes);
     router.use("/job", jobRoutes);
-    router.use("/customer", customerRoutes)
+    router.use("/customer", customerRoutes);
+    router.use("/cashier",cashierRoutes)
 
     
     return router;
