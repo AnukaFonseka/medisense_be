@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         sex: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         },
         address: {
             type: DataTypes.STRING,
@@ -28,27 +28,35 @@ module.exports = (sequelize, DataTypes) => {
         },
         mobileNo: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         },
         civilStatus: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         },
         nic: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         },
         passportId: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         },
         issuedDate: {
             type: DataTypes.DATEONLY,
-            allowNull: false
+            allowNull: true
         },
         issuedPlace: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
+        },
+        timeOfLastMeal: {
+            type: DataTypes.TIME,
+            allowNull: true
+        },
+        referredBy: {
+            type: DataTypes.STRING,
+            allowNull: true
         }
     });
     return Customers
