@@ -273,6 +273,7 @@ async function getCustomerById(id) {
 
         const customersObj = {
             id: customer.id,
+            image: customer?.image || null,
             fullName: customer.fullName,
             dateOfBirth: customer.dateOfBirth,
             sex: customer.sex,
