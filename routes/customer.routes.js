@@ -1,5 +1,6 @@
 const express = require("express");
 const authMiddleware = require("../middleware/auth.middleware");
+const customerMiddleware = require("../middleware/customer.images.middleware");
 const customerController = require("../controller/customer.controller");
 
 function getCustomerRoutes() {
@@ -9,7 +10,7 @@ function getCustomerRoutes() {
     router.use(authMiddleware);
 
     //POST
-    router.post("/registerCustomer", customerController.registerCustomer);
+    router.post("/registerCustomer", customerMiddleware.upload ,customerController.registerCustomer);
     router.post("/addCustomerTestsAndPackages/:customerId/:admissionId", customerController.createCustomerTestsAndPackages);
     
     //GET

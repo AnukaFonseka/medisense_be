@@ -3,6 +3,9 @@ const { sequelize } = require(".");
 
 module.exports = (sequelize, DataTypes) => {
     const Customers = sequelize.define("Customers", {
+        image: {
+            type: DataTypes.STRING,
+        },
         fullName: {
             type: DataTypes.STRING,
             allowNull: false

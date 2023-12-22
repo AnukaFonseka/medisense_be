@@ -5,7 +5,9 @@ async function registerCustomer(req, res) {
     try {
         const userRole_id = req.user.roleId;
         const customerDetails = req.body;
+        customerDetails.image = req.file.path;
         
+        // Check if the user is authorized to perform this action
         if (![1, 2].includes(userRole_id)) {
             return res.status(403).json({ error: true, payload: "Unauthorized. Only Admins and Receptionists can create Customers." });
         }
@@ -214,6 +216,7 @@ async function deleteCustomerById(req, res) {
         })
     }
 }
+
 
 module.exports = {
     registerCustomer,

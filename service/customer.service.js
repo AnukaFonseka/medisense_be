@@ -205,6 +205,7 @@ async function getAllCustomers() {
 
             return {
                 id: customer.id,
+                image: customer.image,
                 fullName: customer.fullName,
                 dateOfBirth: customer.dateOfBirth,
                 sex: customer.sex,
@@ -213,13 +214,13 @@ async function getAllCustomers() {
                 mobileNo: customer.mobileNo,
                 civilStatus: customer.civilStatus,
                 nic: customer.nic,
-                country: customer.country.name,
-                agency: customer.agency.name,
-                job: customer.job.name,
+                country: customer?.country?.name || null,
+                agency: customer?.agency?.name || null,
+                job: customer?.job?.job || null,
                 date: datePart,
                 time: timePart,
-                medical: customer.admissions[0].medicalType,
-                status: customer.admissions[0].paymentStatus
+                medical: customer.admissions[0]?.medicalType || null,
+                status: customer.admissions[0]?.paymentStatus || null
             }
         })
 
@@ -280,12 +281,12 @@ async function getCustomerById(id) {
             mobileNo: customer.mobileNo,
             civilStatus: customer.civilStatus,
             nic: customer.nic,
-            country: customer.country.name,
-            agency: customer.agency.name,
-            job: customer.job.name,
+            country: customer?.country?.name || null,
+            agency: customer?.agency?.name || null,
+            job: customer?.job?.job || null,
             createdAt: customer.createdAt,
             updatedAt: customer.updatedAt,
-            admissions: customer.admissions,
+            admissions: customer?.admissions || null,
         }
 
         return {
