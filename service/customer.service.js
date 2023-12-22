@@ -286,7 +286,7 @@ async function getCustomerById(id) {
             job: customer?.job?.job || null,
             createdAt: customer.createdAt,
             updatedAt: customer.updatedAt,
-            admissions: customer?.admissions || null,
+            medicalType: customer.admissions[0]?.medicalType || null
         }
 
         return {
