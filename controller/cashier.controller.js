@@ -1,5 +1,6 @@
 const e = require('express');
 const cashierService = require('../service/cashier.service');
+const customerService = require('../service/customer.service');
 
 //Get Cashier List
 async function getCashierList(req, res) {
@@ -81,19 +82,43 @@ async function getCustomerWithTestsAndPackages(req, res) {
             return res.status(403).json({ error: true, payload: "Unauthorized. Only Admins and Cashiers Can View Customer Tests." });
         }
 
-        const result = await cashierService.getCustomerWithTestsAndPackages(customerId, admissionId);
-
-        if(result.error) {
-            return res.status(result.status).json ({
+        //Get Customer Details
+        const resultCustomer = await customerService.getCustomerNameById(customerId);
+        
+        if(resultCustomer.error) {
+            return res.status(resultCustomer.status).json ({
                 error: true,
-                payload: result.payload
+                payload: resultCustomer.payload
             })
-        } else {
-            return res.status(result.status).json ({
-                error: false,
-                payload: result.payload
+        }
+
+        //Get Customer Tests
+        const resultTests = await cashierService.getCustomerTestsAndPackages(customerId, admissionId);
+
+        if(resultTests.error) {
+            return res.status(resultTests.status).json ({
+                error: true,
+                payload: resultTests.payload
             })
-        }           
+        }
+
+        const result = {
+            status: 200,
+            payload: {
+                fullName: resultCustomer?.payload?.fullName,
+                agency: resultCustomer?.payload?.agency,
+                tests: resultTests?.payload?.selectedTests,
+                comission: resultCustomer?.payload?.comission,
+                totalPrice: resultTests?.payload?.total,
+                amountToPay: resultCustomer?.payload?.comission + resultTests?.payload?.total
+            }
+        }
+
+        return res.status(result.status).json ({
+            error: false,
+            payload: result.payload
+        })
+                  
     } catch (error) {
         console.log("Error Getting Customer With Tests And Packages Controller: ", error);
         return res.status(500).json({

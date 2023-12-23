@@ -366,6 +366,45 @@ async function deleteCustomerById(id) {
     }
 }
 
+//Get Customer Name By ID
+async function getCustomerNameById(id) {
+    try {
+        const customer = await Customers.findOne({
+            where: {
+                id: id
+            },
+            attributes: ['id','fullName', 'AgencyId'],
+            include: [{
+                model: Agencies,
+                as: 'agency',
+                attributes: ['name', 'commision']
+            }]
+        })
+
+        const customerObj = {
+            id: customer.id,
+            fullName: customer.fullName,
+            agency: customer.agency.name,
+            comission: customer.agency.commision
+        }
+
+        console.log(customerObj);
+
+        return {
+            error: false,
+            status: 200,
+            payload: customerObj
+        }
+
+    } catch (error) {
+        console.error('Error Getting Customer Name By Id Service : ',error);
+        return {
+            error: true,
+            status: 500,
+            payload: error
+        }
+    }
+}
 
 module.exports = {
     registerCustomer,
@@ -374,5 +413,6 @@ module.exports = {
     getAllCustomers,
     getCustomerById,
     updateCustomerById,
-    deleteCustomerById
+    deleteCustomerById,
+    getCustomerNameById
 }

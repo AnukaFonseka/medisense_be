@@ -1,5 +1,5 @@
 const { Sequelize, Op } = require("sequelize");
-const {Admissions, Customers, CustomerTests, Tests, Packages} = require("../models");
+const {Admissions, Customers, CustomerTests, Tests, Packages, CustomerPackages} = require("../models");
 
 //Get Cashier List
 async function getCashierList() {
@@ -108,7 +108,7 @@ async function getCashierListMatrices() {
 }
 
 //Get Customer With Tests And Packages
-async function getCustomerWithTestsAndPackages(customerId, admissionId) {
+async function getCustomerTestsAndPackages(customerId, admissionId) {
     try {
         const customerTests = await CustomerTests.findAll({
             where: {
@@ -126,37 +126,28 @@ async function getCustomerWithTestsAndPackages(customerId, admissionId) {
             }]
         });
 
-        const cutomerPackageTests = await CustomerTests.findAll({
+        const cutomerPackages = await CustomerPackages.findAll({
             where: {
                 customerId: customerId,
                 admissionId: admissionId,
-                packageId: {
-                    [Op.ne]: null
-                }
             },
-            attributes: ['id','packageId', 'testId'],
+            attributes: ['id','packageId'],
             include: [{
                 model: Packages,
                 as: 'package',
                 attributes: ['id','packageCode', 'discription', 'price'],
-            }, {
-                model: Tests,
-                as: 'test',
-                attributes: ['id','testCode', 'description', 'price']
             }]
 
         });
         var customerWithTestsAndPackages = [];
 
-        if(cutomerPackageTests) {
-            const cutomerPackageTestsModified = cutomerPackageTests.map(customerTest => {
+        if(cutomerPackages) {
+            const cutomerPackageTestsModified = cutomerPackages.map(customerPackage => {
                 return {
-                    packageId: customerTest.package.id,
-                    testId: customerTest.testId,
-                    packageCode: customerTest.package.packageCode,
-                    testCode: customerTest.test.testCode,
-                    testDescription: customerTest.test.description,
-                    price: customerTest.package.price
+                    id: customerPackage.package.id,
+                    code: customerPackage.package.packageCode,
+                    description: customerPackage.package.discription,
+                    price: customerPackage.package.price
                 }
             });
 
@@ -166,21 +157,31 @@ async function getCustomerWithTestsAndPackages(customerId, admissionId) {
         if(customerTests) {
             const customerTestsModified = customerTests.map(customerTest => {
                 return {
-                    testId: customerTest.test.id,
-                    packageCode: null,
-                    testCode: customerTest.test.testCode,
-                    testDescription: customerTest.test.description,
+                    id: customerTest.test.id,
+                    code: customerTest.test.testCode,
+                    description: customerTest.test.description,
                     price: customerTest.test.price
                 }
             });
 
             customerWithTestsAndPackages = customerWithTestsAndPackages.concat(customerTestsModified);
         }
+        var total = 0
+        
+        //calculate the total price of selected Tests
+        const price = customerWithTestsAndPackages.forEach((testOrPackage) => {
+            total += testOrPackage.price;
+        })
+
+        const response = {
+            selectedTests: customerWithTestsAndPackages,
+            total: total
+        }
 
         return {
             error: false,
             status: 200,
-            payload: customerWithTestsAndPackages
+            payload: response
         }   
 
     } catch (error) {
@@ -196,5 +197,5 @@ async function getCustomerWithTestsAndPackages(customerId, admissionId) {
 module.exports = {
     getCashierList,
     getCashierListMatrices,
-    getCustomerWithTestsAndPackages
+    getCustomerTestsAndPackages
 }
