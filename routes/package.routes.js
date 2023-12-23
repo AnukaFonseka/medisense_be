@@ -10,7 +10,9 @@ function getPackageRoutes() {
 
     router.post("/createPackage", packageController.createPackage);
     router.get("/getAllPackages", packageController.getAllPackages);
+    router.get("/getPackageById/:id", packageController.getPackageById);
     router.delete("/deletePackage/:id", packageController.deletePackage);
+
 
 
     return router;
