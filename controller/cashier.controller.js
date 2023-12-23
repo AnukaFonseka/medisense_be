@@ -78,7 +78,7 @@ async function getCustomerWithTestsAndPackages(req, res) {
 
         // Check if the user is authorized to perform this action
         if (![1, 3].includes(userRole_id)) {
-            return res.status(403).json({ error: true, payload: "Unauthorized. Only Admins and Cashiers can create Customers." });
+            return res.status(403).json({ error: true, payload: "Unauthorized. Only Admins and Cashiers Can View Customer Tests." });
         }
 
         const result = await cashierService.getCustomerWithTestsAndPackages(customerId, admissionId);
@@ -102,6 +102,8 @@ async function getCustomerWithTestsAndPackages(req, res) {
         })
     }
 }
+
+
 
 module.exports = {
     getCashierList,

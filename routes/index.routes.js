@@ -7,6 +7,7 @@ const countryRoutes = require("./country.routes");
 const jobRoutes = require("./job.routes");
 const customerRoutes = require("./customer.routes");
 const cashierRoutes = require("./cashier.routes");
+const dropdownRoutes = require("./dropdown.routes");
 
 function routes() {
 
@@ -20,6 +21,7 @@ function routes() {
     router.use("/job", jobRoutes);
     router.use("/customer", customerRoutes);
     router.use("/cashier",cashierRoutes)
+    router.use("/dropdown",dropdownRoutes)
 
     
     return router;
