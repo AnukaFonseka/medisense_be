@@ -109,8 +109,7 @@ async function getCustomerWithTestsAndPackages(req, res) {
                 agency: resultCustomer?.payload?.agency,
                 tests: resultTests?.payload?.selectedTests,
                 comission: resultCustomer?.payload?.comission,
-                totalPrice: resultTests?.payload?.total,
-                amountToPay: resultCustomer?.payload?.comission + resultTests?.payload?.total
+                totalAmount: resultCustomer?.payload?.comission + resultTests?.payload?.total
             }
         }
 
@@ -128,10 +127,45 @@ async function getCustomerWithTestsAndPackages(req, res) {
     }
 }
 
+//Add Customer Payment
+async function addCustomerPayment(req, res) {
+    try {
+        const { customerId } = req.params;
+        const { admissionId } = req.params;
+        const userRole_id = req.user.roleId;
+
+        // Check if the user is authorized to perform this action
+        if (![1, 3].includes(userRole_id)) {
+            return res.status(403).json({ error: true, payload: "Unauthorized. Only Admins and Cashiers Can View Customer Tests." });
+        }
+        
+        const result = await cashierService.addCustomerPayment(customerId, admissionId, req.body);
+
+        if(result.error) {
+            return res.status(result.status).json ({
+                error: true,
+                payload: result.payload
+            })
+        } else {
+            return res.status(result.status).json ({
+                error: false,
+                payload: result.payload
+            })
+        }
+    } catch (error) {
+        console.log("Error Creating Customer Payments Controller: ", error);
+        return res.status(500).json({
+            error: true,
+            payload: error
+        })
+    }
+}
+
 
 
 module.exports = {
     getCashierList,
     getCashierListMatrices,
-    getCustomerWithTestsAndPackages
+    getCustomerWithTestsAndPackages,
+    addCustomerPayment
 }   
