@@ -13,6 +13,9 @@ function getCashierRoutes() {
     router.get("/getCashierListMatrices", cashierController.getCashierListMatrices);
     router.get("/getCustomerWithTestsAndPackages/:customerId/:admissionId", cashierController.getCustomerWithTestsAndPackages);
 
+    //PATCH
+    router.patch("/addCustomerPayment/:customerId/:admissionId", cashierController.addCustomerPayment);
+
     
     return router;
 

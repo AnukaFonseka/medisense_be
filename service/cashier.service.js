@@ -194,8 +194,44 @@ async function getCustomerTestsAndPackages(customerId, admissionId) {
     }
 }
 
+//Add Customer Payment
+async function addCustomerPayment(customerId, admissionId, data) {
+    try {
+        const admission = await Admissions.findOne({
+            where: {
+                id: admissionId,
+                customerId: customerId
+            }
+        })
+
+        if(!admission) {
+            return {
+                error: true,
+                status: 404,
+                payload: 'Admission Not Found'
+            }
+        }
+
+        const payment = await admission.update(data);
+
+        return {
+            error: false,
+            status: 200,
+            payload: "Payment Added Successfully!"
+        }
+    } catch (error) {
+        console.error('Error Creating Customer Payments Service : ',error);
+        return {
+            error: true,
+            status: 500,
+            payload: error
+        }
+    }
+}
+
 module.exports = {
     getCashierList,
     getCashierListMatrices,
-    getCustomerTestsAndPackages
+    getCustomerTestsAndPackages,
+    addCustomerPayment
 }

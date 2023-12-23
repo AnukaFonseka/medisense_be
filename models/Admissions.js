@@ -18,11 +18,7 @@ module.exports = (sequelize, DataTypes) => {
         amountToPay: {
             type: DataTypes.DOUBLE,
             allownull: true
-        }, 
-        paymentMethod: {
-            type: DataTypes.STRING,
-            allownull: true
-        }, 
+        },  
         checkNo: {
             type: DataTypes.STRING,
             allownull: true
