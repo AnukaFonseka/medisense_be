@@ -83,7 +83,7 @@ async function getCustomerWithTestsAndPackages(req, res) {
         }
 
         //Get Customer Details
-        const resultCustomer = await customerService.getCustomerBioData(customerId);
+        const resultCustomer = await customerService.getCustomerBioData(customerId, admissionId);
         
         if(resultCustomer.error) {
             return res.status(resultCustomer.status).json ({
@@ -106,12 +106,10 @@ async function getCustomerWithTestsAndPackages(req, res) {
             status: 200,
             payload: {
                 //bio data
-                id: resultCustomer?.payload?.id,
-                image: resultCustomer?.payload?.image,
-                fullName: resultCustomer?.payload?.fullName,
+                customer: resultCustomer?.payload,
                 agency: resultCustomer?.payload?.agency,
-                comission: resultCustomer?.payload?.comission,
-                totalAmount: resultCustomer?.payload?.comission + resultTests?.payload?.total,
+                commission: resultCustomer?.payload?.commission, 
+                totalAmount: resultCustomer?.payload?.commission + resultTests?.payload?.total,
 
                 //tests
                 tests: resultTests?.payload?.selectedTests,
