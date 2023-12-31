@@ -83,7 +83,7 @@ async function getCustomerWithTestsAndPackages(req, res) {
         }
 
         //Get Customer Details
-        const resultCustomer = await customerService.getCustomerNameById(customerId);
+        const resultCustomer = await customerService.getCustomerBioData(customerId);
         
         if(resultCustomer.error) {
             return res.status(resultCustomer.status).json ({
@@ -105,11 +105,16 @@ async function getCustomerWithTestsAndPackages(req, res) {
         const result = {
             status: 200,
             payload: {
+                //bio data
+                id: resultCustomer?.payload?.id,
+                image: resultCustomer?.payload?.image,
                 fullName: resultCustomer?.payload?.fullName,
                 agency: resultCustomer?.payload?.agency,
-                tests: resultTests?.payload?.selectedTests,
                 comission: resultCustomer?.payload?.comission,
-                totalAmount: resultCustomer?.payload?.comission + resultTests?.payload?.total
+                totalAmount: resultCustomer?.payload?.comission + resultTests?.payload?.total,
+
+                //tests
+                tests: resultTests?.payload?.selectedTests,
             }
         }
 
@@ -132,6 +137,7 @@ async function addCustomerPayment(req, res) {
     try {
         const { customerId } = req.params;
         const { admissionId } = req.params;
+        const paymentData = req.body;
         const userRole_id = req.user.roleId;
 
         // Check if the user is authorized to perform this action
@@ -139,7 +145,7 @@ async function addCustomerPayment(req, res) {
             return res.status(403).json({ error: true, payload: "Unauthorized. Only Admins and Cashiers Can View Customer Tests." });
         }
         
-        const result = await cashierService.addCustomerPayment(customerId, admissionId, req.body);
+        const result = await cashierService.addCustomerPayment(customerId, admissionId, paymentData);
 
         if(result.error) {
             return res.status(result.status).json ({

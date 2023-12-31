@@ -366,14 +366,14 @@ async function deleteCustomerById(id) {
     }
 }
 
-//Get Customer Name By ID
-async function getCustomerNameById(id) {
+//Get Customer Bio Data By ID
+async function getCustomerBioData(id) {
     try {
         const customer = await Customers.findOne({
             where: {
                 id: id
             },
-            attributes: ['id','fullName', 'AgencyId'],
+            attributes: ['id','fullName', 'AgencyId', 'image'],
             include: [{
                 model: Agencies,
                 as: 'agency',
@@ -383,6 +383,7 @@ async function getCustomerNameById(id) {
 
         const customerObj = {
             id: customer.id,
+            image: customer.image,
             fullName: customer.fullName,
             agency: customer.agency.name,
             comission: customer.agency.commision
@@ -414,5 +415,5 @@ module.exports = {
     getCustomerById,
     updateCustomerById,
     deleteCustomerById,
-    getCustomerNameById
+    getCustomerBioData
 }
