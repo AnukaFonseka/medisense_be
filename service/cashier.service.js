@@ -12,7 +12,7 @@ async function getCashierList() {
             include : [{
                 model: Customers,
                 as: 'customer',
-                attributes: ['id','fullName', 'mobileNo']
+                attributes: ['id', 'image', 'fullName', 'mobileNo']
             }]
         });
 
@@ -26,9 +26,9 @@ async function getCashierList() {
             const timePart = dateAndTime[1].substring(0, 8);
             
             return {
-                
                 customerId: admission.customer.id,
                 admissionId: admission.id,
+                image: admission.customer.image,
                 fullName: admission.customer.fullName,
                 medicalType: admission.medicalType,
                 contactNo: admission.customer.mobileNo,

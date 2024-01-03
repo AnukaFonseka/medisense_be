@@ -12,6 +12,11 @@ async function registerUser(req, res) {
             return res.status(403).json({ error: true, payload: "Unauthorized. Only Admins can create users." });
         }
 
+        // Validate user input
+        if (!(email && firstName && lastName && password && username && roleId)) {
+            return res.status(400).json({ error: true, payload: "All input is required" });
+        }
+
         const hashPassword = await bcrypt.hash(password, 10);
         const result = await userService.registerUser(firstName, lastName,email,contactNo, dob, address, username, hashPassword, roleId);
         
