@@ -1,18 +1,18 @@
-const e = require('express');
-const cashierService = require('../service/cashier.service');
+const miniLabService = require('../service/miniLab.service');
 const customerService = require('../service/customer.service');
 
-//Get Cashier List
-async function getCashierList(req, res) {
+//Get Patient List for Mini Lab
+async function getMiniLabList(req, res) {
     try {
+        // Get the user role id
         const userRole_id = req.user.roleId;
 
         // Check if the user is authorized to perform this action
         if (![1, 3].includes(userRole_id)) {
-            return res.status(403).json({ error: true, payload: "Unauthorized. Only Admins and Cashiers can create Customers." });
+            return res.status(403).json({ error: true, payload: "Unauthorized. Only Admins and Mini Lab Operators can view Patients for mini lab." });
         }
 
-        const result = await cashierService.getCashierList();
+        const result = await miniLabService.getMiniLabList();
 
         if(result.error) {
             return res.status(result.status).json ({
@@ -36,42 +36,8 @@ async function getCashierList(req, res) {
     }
 }
 
-//Get Cashier List Matrices
-async function getCashierListMatrices(req, res) {
-    try {
-        const userRole_id = req.user.roleId;
-
-        // Check if the user is authorized to perform this action
-        if (![1, 3].includes(userRole_id)) {
-            return res.status(403).json({ error: true, payload: "Unauthorized. Only Admins and Cashiers can create Customers." });
-        }
-
-        const result = await cashierService.getCashierListMatrices();
-
-        if(result.error) {
-            return res.status(result.status).json ({
-                error: true,
-                payload: result.payload
-            })
-        }
-        else {
-            return res.status(result.status).json ({
-                error: false,
-                payload: result.payload
-            })
-        } 
-
-    } catch (error) {
-        console.log("Error Getting CashierList Matrices Controller: ", error);
-        return res.status(500).json({
-            error: true,
-            payload: error
-        })
-    }
-}
-
-//Get Customer With Tests And Packages
-async function getCustomerWithTestsAndPackages(req, res) {
+//Get Customer Tests For Mini Lab
+async function getCustomerTests(req, res) {
     try {
         const { customerId } = req.params;
         const { admissionId } = req.params;
@@ -79,7 +45,7 @@ async function getCustomerWithTestsAndPackages(req, res) {
 
         // Check if the user is authorized to perform this action
         if (![1, 3].includes(userRole_id)) {
-            return res.status(403).json({ error: true, payload: "Unauthorized. Only Admins and Cashiers Can View Customer Tests." });
+            return res.status(403).json({ error: true, payload: "Unauthorized. Only Admins and Mini Lab Operators Can View Customer Tests." });
         }
 
         //Get Customer Details
@@ -93,7 +59,7 @@ async function getCustomerWithTestsAndPackages(req, res) {
         }
 
         //Get Customer Tests
-        const resultTests = await cashierService.getCustomerTestsAndPackages(customerId, admissionId);
+        const resultTests = await miniLabService.getCustomerTests(customerId, admissionId);
 
         if(resultTests.error) {
             return res.status(resultTests.status).json ({
@@ -107,12 +73,8 @@ async function getCustomerWithTestsAndPackages(req, res) {
             payload: {
                 //bio data
                 customer: resultCustomer?.payload,
-                agency: resultCustomer?.payload?.agency,
-                commission: resultCustomer?.payload?.commission, 
-                totalAmount: resultCustomer?.payload?.commission + resultTests?.payload?.total,
-
                 //tests
-                tests: resultTests?.payload?.selectedTests,
+                tests: resultTests?.payload,
             }
         }
 
@@ -122,7 +84,7 @@ async function getCustomerWithTestsAndPackages(req, res) {
         })
                   
     } catch (error) {
-        console.log("Error Getting Customer With Tests And Packages Controller: ", error);
+        console.log("Error Getting Customer Tests Mini Lab Controller: ", error);
         return res.status(500).json({
             error: true,
             payload: error
@@ -130,20 +92,21 @@ async function getCustomerWithTestsAndPackages(req, res) {
     }
 }
 
-//Add Customer Payment
-async function addCustomerPayment(req, res) {
+//Update Mini Lab Status Of Customer
+
+async function updateMiniLabStatus(req, res) {
     try {
         const { customerId } = req.params;
         const { admissionId } = req.params;
-        const paymentData = req.body;
+        const statusId = req.body;
         const userRole_id = req.user.roleId;
 
         // Check if the user is authorized to perform this action
         if (![1, 3].includes(userRole_id)) {
             return res.status(403).json({ error: true, payload: "Unauthorized. Only Admins and Cashiers Can View Customer Tests." });
         }
-        
-        const result = await cashierService.addCustomerPayment(customerId, admissionId, paymentData);
+
+        const result = await miniLabService.updateMiniLabStatus(customerId, admissionId, statusId);
 
         if(result.error) {
             return res.status(result.status).json ({
@@ -157,7 +120,7 @@ async function addCustomerPayment(req, res) {
             })
         }
     } catch (error) {
-        console.log("Error Creating Customer Payments Controller: ", error);
+        console.log("Error Updating Customer MiniLab Controller: ", error);
         return res.status(500).json({
             error: true,
             payload: error
@@ -165,11 +128,8 @@ async function addCustomerPayment(req, res) {
     }
 }
 
-
-
 module.exports = {
-    getCashierList,
-    getCashierListMatrices,
-    getCustomerWithTestsAndPackages,
-    addCustomerPayment
-}   
+    getMiniLabList,
+    getCustomerTests,
+    updateMiniLabStatus
+}

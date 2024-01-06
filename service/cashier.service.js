@@ -1,5 +1,5 @@
 const { Sequelize, Op } = require("sequelize");
-const {Admissions, Customers, CustomerTests, Tests, Packages} = require("../models");
+const {Admissions, Customers, CustomerTests, Tests, Packages, CustomerPackages} = require("../models");
 
 //Get Cashier List
 async function getCashierList() {
@@ -12,7 +12,7 @@ async function getCashierList() {
             include : [{
                 model: Customers,
                 as: 'customer',
-                attributes: ['id','fullName', 'mobileNo']
+                attributes: ['id', 'image', 'fullName', 'mobileNo']
             }]
         });
 
@@ -26,9 +26,9 @@ async function getCashierList() {
             const timePart = dateAndTime[1].substring(0, 8);
             
             return {
-                
                 customerId: admission.customer.id,
                 admissionId: admission.id,
+                image: admission.customer.image,
                 fullName: admission.customer.fullName,
                 medicalType: admission.medicalType,
                 contactNo: admission.customer.mobileNo,
@@ -108,7 +108,7 @@ async function getCashierListMatrices() {
 }
 
 //Get Customer With Tests And Packages
-async function getCustomerWithTestsAndPackages(customerId, admissionId) {
+async function getCustomerTestsAndPackages(customerId, admissionId) {
     try {
         const customerTests = await CustomerTests.findAll({
             where: {
@@ -126,37 +126,28 @@ async function getCustomerWithTestsAndPackages(customerId, admissionId) {
             }]
         });
 
-        const cutomerPackageTests = await CustomerTests.findAll({
+        const cutomerPackages = await CustomerPackages.findAll({
             where: {
                 customerId: customerId,
                 admissionId: admissionId,
-                packageId: {
-                    [Op.ne]: null
-                }
             },
-            attributes: ['id','packageId', 'testId'],
+            attributes: ['id','packageId'],
             include: [{
                 model: Packages,
                 as: 'package',
                 attributes: ['id','packageCode', 'discription', 'price'],
-            }, {
-                model: Tests,
-                as: 'test',
-                attributes: ['id','testCode', 'description', 'price']
             }]
 
         });
         var customerWithTestsAndPackages = [];
 
-        if(cutomerPackageTests) {
-            const cutomerPackageTestsModified = cutomerPackageTests.map(customerTest => {
+        if(cutomerPackages) {
+            const cutomerPackageTestsModified = cutomerPackages.map(customerPackage => {
                 return {
-                    packageId: customerTest.package.id,
-                    testId: customerTest.testId,
-                    packageCode: customerTest.package.packageCode,
-                    testCode: customerTest.test.testCode,
-                    testDescription: customerTest.test.description,
-                    price: customerTest.package.price
+                    id: customerPackage.package.id,
+                    code: customerPackage.package.packageCode,
+                    description: customerPackage.package.discription,
+                    price: customerPackage.package.price
                 }
             });
 
@@ -166,21 +157,31 @@ async function getCustomerWithTestsAndPackages(customerId, admissionId) {
         if(customerTests) {
             const customerTestsModified = customerTests.map(customerTest => {
                 return {
-                    testId: customerTest.test.id,
-                    packageCode: null,
-                    testCode: customerTest.test.testCode,
-                    testDescription: customerTest.test.description,
+                    id: customerTest.test.id,
+                    code: customerTest.test.testCode,
+                    description: customerTest.test.description,
                     price: customerTest.test.price
                 }
             });
 
             customerWithTestsAndPackages = customerWithTestsAndPackages.concat(customerTestsModified);
         }
+        var total = 0
+        
+        //calculate the total price of selected Tests
+        const price = customerWithTestsAndPackages.forEach((testOrPackage) => {
+            total += testOrPackage.price;
+        })
+
+        const response = {
+            selectedTests: customerWithTestsAndPackages,
+            total: total
+        }
 
         return {
             error: false,
             status: 200,
-            payload: customerWithTestsAndPackages
+            payload: response
         }   
 
     } catch (error) {
@@ -193,8 +194,44 @@ async function getCustomerWithTestsAndPackages(customerId, admissionId) {
     }
 }
 
+//Add Customer Payment
+async function addCustomerPayment(customerId, admissionId, data) {
+    try {
+        const admission = await Admissions.findOne({
+            where: {
+                id: admissionId,
+                customerId: customerId
+            }
+        })
+
+        if(!admission) {
+            return {
+                error: true,
+                status: 404,
+                payload: 'Admission Not Found'
+            }
+        }
+
+        const payment = await admission.update(data);
+
+        return {
+            error: false,
+            status: 200,
+            payload: "Payment Added Successfully!"
+        }
+    } catch (error) {
+        console.error('Error Creating Customer Payments Service : ',error);
+        return {
+            error: true,
+            status: 500,
+            payload: error
+        }
+    }
+}
+
 module.exports = {
     getCashierList,
     getCashierListMatrices,
-    getCustomerWithTestsAndPackages
+    getCustomerTestsAndPackages,
+    addCustomerPayment
 }

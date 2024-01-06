@@ -1,4 +1,7 @@
+const ageCalculator = require('age-calculator');
+const {AgeFromDateString, AgeFromDate} = require('age-calculator');
 const {Customers, Admissions, CustomerPackages, Packages, Tests, CustomerTests, Agencies, Jobs, Countries} = require("../models");
+
 
 //Register Customer
 async function registerCustomer(customer) {
@@ -276,20 +279,25 @@ async function getCustomerById(id) {
         const customersObj = {
             id: customer.id,
             image: customer?.image || null,
-            fullName: customer.fullName,
-            dateOfBirth: customer.dateOfBirth,
+            fullName: customer?.fullName,
+            dateOfBirth: customer?.dateOfBirth,
             sex: customer.sex,
             address: customer.address,
             email: customer.email,
             mobileNo: customer.mobileNo,
             civilStatus: customer.civilStatus,
             nic: customer.nic,
+            passportId: customer?.passportId,
+            issuedDate: customer?.issuedDate,
+            issuedPlace: customer?.issuedPlace,
+            timeOfLastMeal: customer?.timeOfLastMeal,
+            referredBy: customer?.referredBy,
             country: customer?.country?.name || null,
             agency: customer?.agency?.name || null,
             job: customer?.job?.job || null,
             createdAt: customer.createdAt,
             updatedAt: customer.updatedAt,
-            medicalType: customer.admissions[0]?.medicalType || null
+            medicalType: customer?.admissions[0]?.medicalType || null
         }
 
         return {
@@ -366,6 +374,69 @@ async function deleteCustomerById(id) {
     }
 }
 
+//Get Customer Bio Data By ID
+async function getCustomerBioData(customerId, admissionId) {
+    try {
+        const customer = await Customers.findOne({
+            where: {
+                id: customerId
+            },
+            include: [{
+                model: Agencies,
+                as: 'agency',
+                attributes: ['name', 'commision']
+            }, {
+                model: Countries,
+                as: 'country',
+                attributes: ['name']
+            }, {
+                model: Jobs,
+                as: 'job',
+                attributes: ['job']
+            }, {
+                model: Admissions,
+                as: 'admissions',
+                where: {
+                    id: admissionId
+                },
+                attributes: ['medicalType']
+            }]
+        })
+
+        //calculate age
+        let customerAge = new AgeFromDateString(customer.dateOfBirth).age;
+
+
+        const customerObj = {
+            id: customer.id,
+            image: customer?.image || null,
+            fullName: customer?.fullName,
+            age: customerAge,
+            gender: customer?.sex,
+            country: customer?.country?.name || null,
+            agency: customer?.agency?.name || null,
+            commission: customer?.agency?.commision || null,
+            job: customer?.job?.job || null,
+            medicalType: customer?.admissions[0]?.medicalType,
+            nic: customer?.nic,
+            passport: customer?.passportId
+        }
+
+        return {
+            error: false,
+            status: 200,
+            payload: customerObj
+        }
+
+    } catch (error) {
+        console.error('Error Getting Customer Bio Data Service : ',error);
+        return {
+            error: true,
+            status: 500,
+            payload: error
+        }
+    }
+}
 
 module.exports = {
     registerCustomer,
@@ -374,5 +445,6 @@ module.exports = {
     getAllCustomers,
     getCustomerById,
     updateCustomerById,
-    deleteCustomerById
+    deleteCustomerById,
+    getCustomerBioData
 }

@@ -53,6 +53,8 @@ try {
     db.DropdownData.hasMany(db.Admissions, {as: "labStatus_admission", foreignKey: "labStatusId"});
     db.Admissions.belongsTo(db.DropdownData, {as: "xRayStatus", foreignKey: "xRayStatusId"});
     db.DropdownData.hasMany(db.Admissions, {as: "xRayStatus_admission", foreignKey: "xRayStatusId"});
+    db.Admissions.belongsTo(db.DropdownData, {as: "paymentMethod", foreignKey: "paymentMethodId"});
+    db.DropdownData.hasMany(db.Admissions, {as: "paymentMethod_admission", foreignKey: "paymentMethodId"})
 
     db.CustomerTests.belongsTo(db.Customers, {as: "customer", foreignKey: "customerId", onDelete: "cascade"});
     db.Customers.hasMany(db.CustomerTests, {as: "customerTests", foreignKey: "customerId", onDelete: "cascade"});
