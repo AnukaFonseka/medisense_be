@@ -10,6 +10,12 @@ function getDropdownRoutes() {
 
     //GET
     router.get("/getPaymentMethods", dropdownController.getPaymentMethods);
+    router.get("/getBanks", dropdownController.getBanks);
+    router.get("/getCreditApprovers", dropdownController.getCreditApprovers);
+    router.get("/getMiniLabStatus", dropdownController.getMiniLabStatus);
+    router.get("/getLabStatus", dropdownController.getLabStatus);
+    router.get("/getXRayStatus", dropdownController.getXRayStatus);
+    router.get("/getRadiographers", dropdownController.getRadiographers);
 
     
     return router;

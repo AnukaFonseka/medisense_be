@@ -9,7 +9,7 @@ function getJobRoutes() {
     router.use(authMiddleware);
 
     router.post("/addJob", jobController.createJob);
-     router.get("/getAllJobs", jobController.getAllJobs);
+    router.get("/getAllJobs", jobController.getAllJobs);
    
     
     return router;
